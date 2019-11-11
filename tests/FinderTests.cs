@@ -23,9 +23,21 @@ namespace tests
         {
             string path = @"/Users/shanekenyon/Music/iTunes/";
             List<MusicFile> files =
-                new Finder(path, "foo").GetMusicFiles();
+                new Finder(path, "mp3").GetMusicFiles();
             Console.Write("Files = " + files.Count);
             Assert.NotEmpty(files);
+        }
+
+        [Fact]
+        public void GetMusicFilePropertiesTest()
+        {
+            string path = @"/Users/shanekenyon/Music/iTunes/";
+            List<MusicFile> files =
+                new Finder(path, "mp3").GetMusicFiles();
+            var f = files[0];
+            Assert.Contains(path, f.SourcePath);
+            Assert.Equal("mp3", f.Type);
+            Assert.NotNull(f.Filename);
         }
     }
 }
