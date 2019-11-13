@@ -10,5 +10,6 @@ namespace Library
       public string Filename;
       public string Trackname;
       public string Type;
+      public int Playtime;
     }
 }
