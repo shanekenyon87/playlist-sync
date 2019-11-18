@@ -38,7 +38,9 @@ namespace tests
         {
           String sourcePath = Utility.GetAppRoot() + "source";
           String destPath = Utility.GetAppRoot() + "output";
+          destPath = "/Volumes/Music";
           PlayList pl = new PlayList(sourcePath, destPath);
+          pl.PurgeTracks();
           pl.Read("Adirondac.m3u");
           pl.Write("Adirondac.m3u");
           pl.CopyTracks("/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
