@@ -3,8 +3,6 @@ using Xunit;
 using Library;
 using System.Collections.Generic;
 using System.IO;
-
-
 namespace tests
 {
     public class PlayListTests

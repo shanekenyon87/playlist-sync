@@ -16,7 +16,7 @@ namespace Library
     private static string EXTINF = "#EXTINF:";
     private String SourcePath;
     private String DestinationPath;
-    private String PlaylistFilename;
+    public String PlaylistFilename;
     private string Name
     {
       get
@@ -76,34 +76,12 @@ namespace Library
 
     public void PurgeTracks()
     {
-      List<String> files = GetAllFiles(DestinationPath);
+      List<String> files = Utility.GetAllFiles(DestinationPath);
       foreach (string f in files)
       {
         if (f.Replace(DestinationPath, "").StartsWith("/.")) continue;
         File.Delete(f);
       }
-    }
-
-    private List<String> GetAllFiles(string sDir)
-    {
-      List<String> files = new List<String>();
-      try
-      {
-        foreach (string f in Directory.GetFiles(sDir))
-        {
-          files.Add(f);
-        }
-        foreach (string d in Directory.GetDirectories(sDir))
-        {
-          files.AddRange(GetAllFiles(d));
-        }
-      }
-      catch (System.Exception ex)
-      {
-        Debug.WriteLine(ex.Message);
-      }
-
-      return files;
     }
 
     public void CopyTracks(string RelativePath)
