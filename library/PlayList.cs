@@ -7,15 +7,17 @@ namespace Library
 {
   public class PlayList
   {
-    public PlayList(string SourcePath, string DestinationPath)
+    public PlayList(string SourcePath, string DestinationPath, string MusicSourcePath)
     {
       this.SourcePath = SourcePath;
       this.DestinationPath = DestinationPath;
+      this.MusicSourcePath = MusicSourcePath;
     }
     private static string HEADER = "#EXTM3U";
     private static string EXTINF = "#EXTINF:";
     private String SourcePath;
     private String DestinationPath;
+    private String MusicSourcePath;
     public String PlaylistFilename;
     private string Name
     {
@@ -42,7 +44,7 @@ namespace Library
           m.Trackname = s.Split(',')[1];
           m.Playtime = Int16.Parse((s.Split(',')[0].Replace(EXTINF, "")));
         }
-        else if (s.StartsWith("/"))
+        else if (s.StartsWith("/") && File.Exists(MusicSourcePath + s))
         {
           m.Filename = s;
           m.SubFolder = Name;
@@ -54,8 +56,6 @@ namespace Library
 
     public void Write(String Filename)
     {
-      // TODO: This must have an associated directory and the filenames must include that,
-      // each playlist will have its own collection of songs
       Filename = DestinationPath + "/" + Filename;
       if (File.Exists(Filename))
       {
@@ -76,34 +76,31 @@ namespace Library
 
     public void PurgeTracks()
     {
-      List<String> files = Utility.GetAllFiles(DestinationPath);
-      foreach (string f in files)
+      if (DestinationPath == "" || DestinationPath == "/") return;
+      if (Directory.Exists(DestinationPath + "/" + Name))
       {
-        if (f.Replace(DestinationPath, "").StartsWith("/.")) continue;
-        File.Delete(f);
+        Directory.Delete(DestinationPath + "/" + Name, true);
       }
-    }
-
-    public void CopyTracks(string RelativePath)
-    {
-      string Temp = SourcePath;
-      SourcePath = RelativePath;
-      CopyTracks();
-      SourcePath = Temp;
     }
     public void CopyTracks()
     {
       // TODO: This must put the files in a specific Playlist directory
       // TODO: This must purge the existing files so no garbo stays around
-      if (MusicFiles.Count != 0)
+      if (MusicFiles.Count != 0 && Directory.Exists(MusicSourcePath))
       {
+        String sourceFile;
         foreach (MusicFile m in MusicFiles)
         {
-          Directory.CreateDirectory(Path.GetDirectoryName(DestinationPath + "/" + Name + "/" + m.Filename));
-          File.Copy(
-            SourcePath + "/" + m.Filename,
-            DestinationPath + "/" + Name + "/" + m.Filename
-          );
+          sourceFile = MusicSourcePath + "/" + m.Filename;
+          if (File.Exists(sourceFile)) {
+            Directory.CreateDirectory(Path.GetDirectoryName(DestinationPath + "/" + Name + "/" + m.Filename));
+            File.Copy(
+              sourceFile,
+              DestinationPath + "/" + Name + "/" + m.Filename
+            );
+          } else {
+            Console.WriteLine("Cannot find file " + sourceFile);
+          }
         }
       }
     }

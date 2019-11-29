@@ -7,13 +7,15 @@ namespace Library
 {
   public class Collection
   {
-    public Collection(string SourcePath, string DestinationPath)
+    public Collection(string SourcePath, string DestinationPath, string MusicSourcePath)
     {
       this.SourcePath = SourcePath;
       this.DestinationPath = DestinationPath;
+      this.MusicSourcePath = MusicSourcePath;
     }
     private String SourcePath;
     private String DestinationPath;
+    private String MusicSourcePath;
     public List<PlayList> PlayLists = new List<PlayList>();
     public void GetPlayLists() {
       List<String> files = Utility.GetAllFiles(SourcePath);
@@ -21,10 +23,18 @@ namespace Library
       {
         if (f.EndsWith("m3u"))
         {
-          PlayList p = new PlayList(SourcePath, DestinationPath);
-          p.Read(f);
+          PlayList p = new PlayList(SourcePath, DestinationPath, MusicSourcePath);
+          p.Read(f.Substring(f.LastIndexOf("/") + 1));
           PlayLists.Add(p);
         }
+      }
+    }
+    public void WritePlayLists() {
+      foreach (PlayList pl in PlayLists)
+      {
+        pl.PurgeTracks();
+        pl.Write(pl.PlaylistFilename);
+        pl.CopyTracks();
       }
     }
   }

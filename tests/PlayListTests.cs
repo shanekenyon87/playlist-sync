@@ -11,7 +11,7 @@ namespace tests
         public void ReadPlayListTest()
         {
           String sourcePath = Utility.GetAppRoot() + "source";
-          PlayList pl = new PlayList(sourcePath, "");
+          PlayList pl = new PlayList(sourcePath, "", "");
           pl.Read("Adirondac.m3u");
           Assert.NotEmpty(pl.MusicFiles);
           MusicFile m = pl.MusicFiles[0];
@@ -25,7 +25,7 @@ namespace tests
         {
           String sourcePath = Utility.GetAppRoot() + "source";
           String destPath = Utility.GetAppRoot() + "output";
-          PlayList pl = new PlayList(sourcePath, destPath);
+          PlayList pl = new PlayList(sourcePath, destPath, "/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
           pl.Read("Adirondac.m3u");
           pl.Write("Adirondac.m3u");
           Assert.True(File.Exists(destPath + "/Adirondac.m3u"));
@@ -37,11 +37,11 @@ namespace tests
           String sourcePath = Utility.GetAppRoot() + "source";
           String destPath = Utility.GetAppRoot() + "output";
           destPath = "/Volumes/Music";
-          PlayList pl = new PlayList(sourcePath, destPath);
+          PlayList pl = new PlayList(sourcePath, destPath, "/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
           pl.PurgeTracks();
           pl.Read("Adirondac.m3u");
           pl.Write("Adirondac.m3u");
-          pl.CopyTracks("/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
+          pl.CopyTracks();
           Assert.True(File.Exists(destPath + "/Adirondac.m3u"));
         }
     }
