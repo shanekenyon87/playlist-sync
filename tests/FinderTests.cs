@@ -11,27 +11,25 @@ namespace tests
         [Fact]
         public void GetFilesTest()
         {
-            string path = @"/Users/shanekenyon/Music/iTunes/";
+            string path = @"/Users/shanekenyon/Music/Itunes/itunes media/music";
             string[] files =
-                new Finder(path, "foo").GetFiles();
-            Console.Write("Files = " + files.Length);
+                new Finder(path, "mp3").GetFiles();
             Assert.NotEmpty(files);
         }
 
         [Fact]
         public void GetMusicFilesTest()
         {
-            string path = @"/Users/shanekenyon/Music/iTunes/";
+            string path = @"/Users/shanekenyon/Music/Itunes/itunes media/music";
             List<MusicFile> files =
                 new Finder(path, "mp3").GetMusicFiles();
-            Console.Write("Files = " + files.Count);
             Assert.NotEmpty(files);
         }
 
         [Fact]
         public void GetMusicFilePropertiesTest()
         {
-            string path = @"/Users/shanekenyon/Music/iTunes/";
+            string path = @"/Users/shanekenyon/Music/Itunes/itunes media/music";
             List<MusicFile> files =
                 new Finder(path, "mp3").GetMusicFiles();
             var f = files[0];

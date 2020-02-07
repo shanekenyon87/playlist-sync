@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
 
 namespace Library
 {
@@ -29,8 +28,11 @@ namespace Library
     public List<MusicFile> MusicFiles = new List<MusicFile>();
     public void Read(String Filename)
     {
+      int added = 0;
+      int skipped = 0;
       PlaylistFilename = Filename;
       Filename = SourcePath + "/" + Filename;
+      Console.WriteLine("Reading source playlist file = " + Filename);
       if (!CanDo(Filename)) return;
       StreamReader sr = File.OpenText(Filename);
       String s = "";
@@ -39,19 +41,26 @@ namespace Library
       {
         if (s.StartsWith(EXTINF))
         {
-          Debug.WriteLine(s);
           m = new MusicFile();
           m.Trackname = s.Split(',')[1];
           m.Playtime = Int16.Parse((s.Split(',')[0].Replace(EXTINF, "")));
         }
-        else if (s.StartsWith("/") && File.Exists(MusicSourcePath + s))
+        else if (s.StartsWith("/"))
         {
-          m.Filename = s;
+          
+          if (!File.Exists(MusicSourcePath + CleanFilename(s)))
+          {
+            skipped++;
+            continue;
+          }
+          m.Filename = CleanFilename(s);
           m.SubFolder = Name;
           m.Type = s.Split('.')[1];
           MusicFiles.Add(m);
+          added++;
         }
       }
+      Console.WriteLine("Files added = " + added + " skipped =  " + skipped);
     }
 
     public void Write(String Filename)
@@ -86,23 +95,34 @@ namespace Library
     {
       // TODO: This must put the files in a specific Playlist directory
       // TODO: This must purge the existing files so no garbo stays around
-      if (MusicFiles.Count != 0 && Directory.Exists(MusicSourcePath))
+      int copied = 0;
+      int failed = 0;
+      if (Directory.Exists(MusicSourcePath))
       {
         String sourceFile;
+        
+        Console.WriteLine("Starting copy of " + MusicFiles.Count + " files for playlist " + PlaylistFilename);
         foreach (MusicFile m in MusicFiles)
         {
-          sourceFile = MusicSourcePath + "/" + m.Filename;
+          sourceFile = MusicSourcePath + "/" + CleanFilename(m.Filename);
+          
           if (File.Exists(sourceFile)) {
-            Directory.CreateDirectory(Path.GetDirectoryName(DestinationPath + "/" + Name + "/" + m.Filename));
+            Directory.CreateDirectory(
+              Path.GetDirectoryName(DestinationPath + "/" + Name + "/" + CleanFilename(m.Filename)
+              ));
             File.Copy(
               sourceFile,
-              DestinationPath + "/" + Name + "/" + m.Filename
+              DestinationPath + "/" + Name + "/" + CleanFilename(m.Filename)
             );
+            copied++;
           } else {
-            Console.WriteLine("Cannot find file " + sourceFile);
+            failed++;
           }
         }
+      } else {
+        throw new Exception("Cannot find directory " + MusicSourcePath);
       }
+      Console.WriteLine("Files copied = " + copied + " failed = " + failed);
     }
 
     public Boolean CanDo(string Filename)
@@ -115,6 +135,10 @@ namespace Library
       }
       Console.WriteLine("Cannot finde file = " + Filename);
       return false;
+    }
+
+    private String CleanFilename(String filename) {
+      return filename.Replace(MusicSourcePath, "");
     }
   }
 }

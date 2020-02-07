@@ -36,13 +36,15 @@ namespace tests
         {
           String sourcePath = Utility.GetAppRoot() + "source";
           String destPath = Utility.GetAppRoot() + "output";
-          destPath = "/Volumes/Music";
+          //destPath = "/Volumes/Music";
           PlayList pl = new PlayList(sourcePath, destPath, "/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
-          pl.PurgeTracks();
+          System.Diagnostics.Debug.WriteLine("pl = " + pl);
           pl.Read("Adirondac.m3u");
+          pl.PurgeTracks();
           pl.Write("Adirondac.m3u");
           pl.CopyTracks();
           Assert.True(File.Exists(destPath + "/Adirondac.m3u"));
+          Assert.True(Directory.Exists(destPath + "/Adirondac"));
         }
     }
 }
