@@ -23,9 +23,9 @@ namespace Library
       {
         if (f.EndsWith("m3u"))
         {
-          PlayList p = new PlayList(SourcePath, DestinationPath, MusicSourcePath);
-          p.Read(f.Substring(f.LastIndexOf("/") + 1));
-          PlayLists.Add(p);
+          PlayList pl = new PlayList(SourcePath, DestinationPath, MusicSourcePath);
+          pl.Read(f.Substring(f.LastIndexOf("/") + 1));
+          PlayLists.Add(pl);
         }
       }
     }

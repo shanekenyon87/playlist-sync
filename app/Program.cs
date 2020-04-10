@@ -10,12 +10,13 @@ namespace app
             Console.WriteLine("Starting playlist copy");
             String sourcePath = Utility.GetAppRoot() + "source";
             String destPath = Utility.GetAppRoot() + "output";
-            //destPath = "/Volumes/Music";
-            PlayList pl = new PlayList(sourcePath, destPath, "/Users/shanekenyon/Music/iTunes/iTunes Media/Music");
-            pl.Read("Just Like Heaven.m3u");
-            pl.PurgeTracks();
-            pl.Write("Just Like Heaven.m3u");
-            pl.CopyTracks();
+            String userRoot = Utility.GetCurrentUserRoot();
+            String iTunesRelativePath = "Music/iTunes/iTunes Media/Music";
+            String iTunesPath = userRoot + "/" + iTunesRelativePath;
+
+            Collection c = new Collection(sourcePath, destPath, iTunesPath);
+            c.GetPlayLists();
+            c.WritePlayLists();
         }
     }
 }

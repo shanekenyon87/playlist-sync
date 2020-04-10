@@ -13,6 +13,11 @@ namespace Library
       return appRoot.Substring(0, appRoot.LastIndexOf("/") + 1);
     }
 
+    public static String GetCurrentUserRoot() {
+      var userRoot = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+      return userRoot;
+    }
+
     public static List<String> GetAllFiles(string sDir)
     {
       List<String> files = new List<String>();
